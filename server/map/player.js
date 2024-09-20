@@ -7,6 +7,7 @@ class Player {
     this.name = name;
     this.map = map;
     this.originalColor = color || this.generateRandomColor();
+    this.maxLength = 2; // 初始最大长度
     this.reset();
   }
 
@@ -65,6 +66,9 @@ class Player {
 
   grow() {
     this.growing += 1;
+    if (this.body.length > this.maxLength) {
+      this.maxLength = this.body.length;
+    }
   }
 
   die() {
@@ -104,6 +108,7 @@ class Player {
       body: this.body,
       color: this.color,
       alive: this.alive,
+      maxLength: this.maxLength,
     };
   }
 }

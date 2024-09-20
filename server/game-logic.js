@@ -34,7 +34,7 @@ class GameLogic {
     // 立即更新记分板
     await this.updateScoreboard();
 
-    // 如果有足够的玩家，开始游戏
+    // 如果有足够玩家，开始游戏
     if (Object.keys(this.players).length >= 2 && this.gameState === "waiting") {
       this.gameState = "playing";
       this.io.emit("gameStart");
@@ -105,54 +105,33 @@ class GameLogic {
         await SQL.updatePlayerMaxLength(player.uuid, player.maxLength);
       }
     }
-    this.checkCollisions();
+    await this.checkCollisions();
     this.food.update(this.map);
     this.checkGameEnd();
     await this.updateScoreboard();
   }
 
-  async updateScoreboard() {
-    const topPlayers = await SQL.getTopPlayers();
-    this.io.emit("updateScoreboard", topPlayers);
-  }
-
-  async gameLoop() {
-    try {
-      await this.updateGame();
-      await this.updateScoreboard();
-      this.io.emit("gameState", this.getGameState());
-    } catch (error) {
-      console.error("Error in game loop:", error);
-    }
-    setTimeout(() => this.gameLoop(), 100);
-  }
-
-  updateGame() {
-    Object.values(this.players).forEach((player) => player.move());
-    this.checkCollisions();
-    this.food.update(this.map);
-    this.checkGameEnd();
-  }
-
-  checkCollisions() {
-    Object.values(this.players).forEach((player) => {
+  async checkCollisions() {
+    for (const player of Object.values(this.players)) {
       if (player.alive) {
         // 检查与其他玩家的碰撞
-        Object.values(this.players).forEach((otherPlayer) => {
+        for (const otherPlayer of Object.values(this.players)) {
           if (player !== otherPlayer && player.checkCollision(otherPlayer)) {
             player.die();
             this.io.emit("playerDied", player.getState());
           }
-        });
+        }
 
         if (player.checkFoodCollision(this.food)) {
           player.grow();
+          if (player.body.length > player.maxLength) {
+            player.maxLength = player.body.length;
+            await SQL.updatePlayerMaxLength(player.uuid, player.maxLength);
+          }
           this.food.respawn(this.map);
-          // 移除这行，因为我们在 gameLoop 中已经发送了游戏状态
-          // this.sendGameState();
         }
       }
-    });
+    }
   }
 
   checkGameEnd() {
@@ -207,6 +186,23 @@ class GameLogic {
       ),
       food: this.food.getState(),
     };
+  }
+
+  async gameLoop() {
+    try {
+      if (this.gameState === "playing") {
+        await this.updateGame();
+      }
+      this.io.emit("gameState", this.getGameState());
+    } catch (error) {
+      console.error("Error in game loop:", error);
+    }
+    setTimeout(() => this.gameLoop(), 100);
+  }
+
+  async updateScoreboard() {
+    const topPlayers = await SQL.getTopPlayers();
+    this.io.emit("updateScoreboard", topPlayers);
   }
 }
 

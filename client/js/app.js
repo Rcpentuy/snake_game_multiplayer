@@ -6,7 +6,8 @@ import { gameState } from "./global.js";
 
 class Game {
   constructor() {
-    this.socket = io("/", {
+    const serverUrl = this.getServerUrl();
+    this.socket = io(serverUrl, {
       transports: ["websocket", "polling"],
     });
     this.canvas = new Canvas();
@@ -18,6 +19,14 @@ class Game {
     this.setupOptionsButton();
     this.joinGame();
     this.setupScoreboard();
+  }
+
+  getServerUrl() {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port =
+      process.env.NODE_ENV === "production" ? window.location.port : "3000";
+    return `${protocol}//${hostname}:${port}`;
   }
 
   setupSocketEvents() {

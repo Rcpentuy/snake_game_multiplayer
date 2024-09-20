@@ -41,6 +41,7 @@ const io = socketIo(server, {
   cors: {
     origin: "*", // 允许所有来源，您也可以设置为特定的域名
     methods: ["GET", "POST"],
+    credentials: true, //?
   },
 });
 
@@ -135,6 +136,6 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`服务器运行在端口 ${PORT}`);
 });

@@ -32,6 +32,10 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/dist/index.html"));
 });
 
+app.get("/test", (req, res) => {
+  res.send("Server is working");
+});
+
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {

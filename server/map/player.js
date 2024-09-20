@@ -11,10 +11,13 @@ class Player {
   }
 
   reset() {
+    const x = randomPosition(this.map.width);
+    const y = randomPosition(this.map.height);
     this.body = [
-      { x: randomPosition(this.map.width), y: randomPosition(this.map.height) },
+      { x, y },
+      { x, y: (y - 1 + this.map.height) % this.map.height }, // 添加第二个身体段落
     ];
-    this.direction = "right";
+    this.direction = "down"; // 将初始方向改为向下，这样蛇头在前
     this.growing = 0;
     this.alive = true;
     this.color = this.originalColor; // 恢复原始颜色

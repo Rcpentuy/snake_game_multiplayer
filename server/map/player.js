@@ -6,7 +6,7 @@ class Player {
     this.uuid = uuid;
     this.name = name;
     this.map = map;
-    this.color = color || this.generateRandomColor();
+    this.originalColor = color || this.generateRandomColor();
     this.reset();
   }
 
@@ -17,8 +17,7 @@ class Player {
     this.direction = "right";
     this.growing = 0;
     this.alive = true;
-    // 重置时不改变颜色，保持原有颜色
-    // this.color = this.generateRandomColor();
+    this.color = this.originalColor; // 恢复原始颜色
   }
 
   setDirection(newDirection) {

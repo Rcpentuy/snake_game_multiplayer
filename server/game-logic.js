@@ -11,6 +11,7 @@ class GameLogic {
     this.players = {};
     this.playersByUUID = {};
     this.food = new Food(this.map);
+    this.gameState = "waiting"; // 可以是 'waiting', 'playing', 或 'ending'
     this.gameLoop();
   }
 
@@ -29,6 +30,13 @@ class GameLogic {
     );
     this.players[socket.id] = player;
     this.playersByUUID[uuid] = player;
+
+    // 如果有足够的玩家，开始游戏
+    if (Object.keys(this.players).length >= 2 && this.gameState === "waiting") {
+      this.gameState = "playing";
+      this.io.emit("gameStart");
+    }
+
     return player;
   }
 
@@ -37,6 +45,12 @@ class GameLogic {
     if (player) {
       delete this.players[socketId];
       delete this.playersByUUID[player.uuid];
+    }
+
+    // 如果玩家数量不足，结束游戏
+    if (Object.keys(this.players).length < 2 && this.gameState === "playing") {
+      this.gameState = "waiting";
+      this.io.emit("gamePaused", "等待更多玩家加入...");
     }
   }
 
@@ -119,10 +133,23 @@ class GameLogic {
   }
 
   checkGameEnd() {
+    if (this.gameState !== "playing") return;
+
     const alivePlayers = Object.values(this.players).filter(
       (player) => player.alive
     );
-    if (alivePlayers.length === 1 && Object.keys(this.players).length > 1) {
+
+    if (alivePlayers.length === 0) {
+      // 所有玩家同时死亡
+      this.gameState = "ending";
+      this.io.emit("gameEnd", { noSurvivors: true });
+      setTimeout(() => this.restartGame(), 3000);
+    } else if (
+      alivePlayers.length === 1 &&
+      Object.keys(this.players).length > 1
+    ) {
+      // 只有一名玩家存活
+      this.gameState = "ending";
       const winner = alivePlayers[0];
       this.io.emit("gameEnd", { winner: winner.getState() });
       setTimeout(() => this.restartGame(), 3000);
@@ -130,11 +157,21 @@ class GameLogic {
   }
 
   restartGame() {
+    this.gameState = "waiting";
     Object.values(this.players).forEach((player) => player.reset());
     this.food.respawn(this.map);
     this.io.emit("gameRestart");
-    // 在这里直接发送新的游戏状态，而不是调用 sendGameState
     this.io.emit("gameState", this.getGameState());
+
+    // 给玩家一些时间准备，然后开始新的游戏
+    setTimeout(() => {
+      if (Object.keys(this.players).length >= 2) {
+        this.gameState = "playing";
+        this.io.emit("gameStart");
+      } else {
+        this.io.emit("gamePaused", "等待更多玩家加入...");
+      }
+    }, 3000);
   }
 
   getGameState() {

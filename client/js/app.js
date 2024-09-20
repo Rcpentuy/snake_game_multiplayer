@@ -40,14 +40,31 @@ class Game {
       this.chatClient.displayMessage(`玩家 ${player.name} 已死亡！`);
     });
 
-    this.socket.on("gameEnd", ({ winner }) => {
-      this.chatClient.displayMessage(`游戏结束！胜者是 ${winner.name}！`);
+    this.socket.on("gameEnd", (data) => {
+      this.gameState = "ending";
+      if (data.noSurvivors) {
+        this.chatClient.displayMessage("场上没有存活玩家！");
+      } else if (data.winner) {
+        this.chatClient.displayMessage(
+          `游戏结束！胜者是 ${data.winner.name}！`
+        );
+      }
       this.chatClient.displayMessage("3秒后游戏将重新开始...");
     });
 
     this.socket.on("gameRestart", () => {
-      this.chatClient.displayMessage("游戏重新开始！");
-      // 不需要在这里做任何特殊处理，因为服务器会发送新的游戏状态
+      this.gameState = "waiting";
+      this.chatClient.displayMessage("游戏重新开始！等待玩家准备...");
+    });
+
+    this.socket.on("gameStart", () => {
+      this.gameState = "playing";
+      this.chatClient.displayMessage("游戏开始！");
+    });
+
+    this.socket.on("gamePaused", (message) => {
+      this.gameState = "waiting";
+      this.chatClient.displayMessage(message);
     });
   }
 

@@ -39,7 +39,7 @@ export class Renderer {
           segment.y * CELL_SIZE,
           CELL_SIZE,
           CELL_SIZE,
-          player.alive ? player.color : "#808080" // 如果玩家死亡，使用灰色
+          player.color // 直接使用玩家的颜色，不再根据存活状态改变
         );
       });
     });

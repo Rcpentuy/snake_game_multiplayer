@@ -21,6 +21,16 @@ app.use(
   })
 );
 
+// 提供静态文件
+app.use(express.static(path.join(__dirname, "../client/dist")));
+
+// ... 其他服务器代码 ...
+
+// 对于所有其他路由，返回 index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+});
+
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {

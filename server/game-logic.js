@@ -31,6 +31,9 @@ class GameLogic {
     this.players[socket.id] = player;
     this.playersByUUID[uuid] = player;
 
+    // 立即更新记分板
+    await this.updateScoreboard();
+
     // 如果有足够的玩家，开始游戏
     if (Object.keys(this.players).length >= 2 && this.gameState === "waiting") {
       this.gameState = "playing";
@@ -94,10 +97,29 @@ class GameLogic {
     return "#" + Math.floor(Math.random() * 16777215).toString(16);
   }
 
-  gameLoop() {
+  async updateGame() {
+    for (const player of Object.values(this.players)) {
+      player.move();
+      if (player.body.length > player.maxLength) {
+        player.maxLength = player.body.length;
+        await SQL.updatePlayerMaxLength(player.uuid, player.maxLength);
+      }
+    }
+    this.checkCollisions();
+    this.food.update(this.map);
+    this.checkGameEnd();
+    await this.updateScoreboard();
+  }
+
+  async updateScoreboard() {
+    const topPlayers = await SQL.getTopPlayers();
+    this.io.emit("updateScoreboard", topPlayers);
+  }
+
+  async gameLoop() {
     try {
-      this.updateGame();
-      // 在这里发送游戏状态
+      await this.updateGame();
+      await this.updateScoreboard();
       this.io.emit("gameState", this.getGameState());
     } catch (error) {
       console.error("Error in game loop:", error);

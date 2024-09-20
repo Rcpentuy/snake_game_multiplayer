@@ -92,3 +92,29 @@ body {
 #chatMessages::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
+
+#scoreboard {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+#scoreboard h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+#scoreList {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#scoreList li {
+  margin-bottom: 5px;
+}

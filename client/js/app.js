@@ -17,6 +17,7 @@ class Game {
     this.setupInputHandlers();
     this.setupOptionsButton();
     this.joinGame();
+    this.setupScoreboard();
   }
 
   setupSocketEvents() {
@@ -54,7 +55,7 @@ class Game {
 
     this.socket.on("gameRestart", () => {
       this.gameState = "waiting";
-      this.chatClient.displayMessage("游戏重新开始！等待���家准备...");
+      this.chatClient.displayMessage("游戏重新开始！等待家准备...");
     });
 
     this.socket.on("gameStart", () => {
@@ -65,6 +66,10 @@ class Game {
     this.socket.on("gamePaused", (message) => {
       this.gameState = "waiting";
       this.chatClient.displayMessage(message);
+    });
+
+    this.socket.on("updateScoreboard", (topPlayers) => {
+      this.updateScoreboard(topPlayers);
     });
   }
 
@@ -165,6 +170,19 @@ class Game {
     console.log(message);
     // 如果你想在聊天框中显示这条消息，可以使用下面的代码
     // this.chatClient.displayMessage(message);
+  }
+
+  setupScoreboard() {
+    this.scoreList = document.getElementById("scoreList");
+  }
+
+  updateScoreboard(topPlayers) {
+    this.scoreList.innerHTML = "";
+    topPlayers.forEach((player, index) => {
+      const li = document.createElement("li");
+      li.textContent = `${index + 1}. ${player.name}: ${player.max_length}`;
+      this.scoreList.appendChild(li);
+    });
   }
 }
 

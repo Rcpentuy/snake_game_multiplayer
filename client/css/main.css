@@ -1,3 +1,22 @@
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+#gameContainer {
+  position: relative;
+}
+
+#gameCanvas {
+  display: block;
+  border: 2px solid #000;
+}
+
 #optionsButton {
   position: absolute;
   top: 10px;

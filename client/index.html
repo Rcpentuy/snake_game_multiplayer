@@ -7,18 +7,20 @@
     <link rel="stylesheet" href="css/main.css" />
   </head>
   <body>
-    <canvas id="gameCanvas"></canvas>
-    <div id="chatContainer">
-      <div id="chatMessages"></div>
-      <div id="chatInputContainer">
-        <input type="text" id="chatInput" placeholder="输入聊天消息..." />
+    <div id="gameContainer">
+      <canvas id="gameCanvas"></canvas>
+      <div id="chatContainer">
+        <div id="chatMessages"></div>
+        <div id="chatInputContainer">
+          <input type="text" id="chatInput" placeholder="输入聊天消息..." />
+        </div>
       </div>
-    </div>
-    <button id="optionsButton">更多选项</button>
-    <div id="optionsMenu" style="display: none">
-      <button id="changeNameButton">修改名字</button>
-      <button id="changeColorButton">更换颜色</button>
-      <button id="toggleChatInputButton">开关聊天输入</button>
+      <button id="optionsButton">更多选项</button>
+      <div id="optionsMenu" style="display: none">
+        <button id="changeNameButton">修改名字</button>
+        <button id="changeColorButton">更换颜色</button>
+        <button id="toggleChatInputButton">开关聊天输入</button>
+      </div>
     </div>
     <script type="module" src="js/app.js"></script>
   </body>

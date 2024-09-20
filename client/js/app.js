@@ -54,7 +54,7 @@ class Game {
 
     this.socket.on("gameRestart", () => {
       this.gameState = "waiting";
-      this.chatClient.displayMessage("游戏重新开始！等待玩家准备...");
+      this.chatClient.displayMessage("游戏重新开始！等待���家准备...");
     });
 
     this.socket.on("gameStart", () => {
@@ -92,7 +92,9 @@ class Game {
     const optionsMenu = document.getElementById("optionsMenu");
     const changeNameButton = document.getElementById("changeNameButton");
     const changeColorButton = document.getElementById("changeColorButton");
-    const toggleChatButton = document.getElementById("toggleChatButton");
+    const toggleChatInputButton = document.getElementById(
+      "toggleChatInputButton"
+    );
 
     optionsButton.addEventListener("click", () => {
       optionsMenu.style.display =
@@ -111,8 +113,8 @@ class Game {
       this.socket.emit("updateColor");
     });
 
-    toggleChatButton.addEventListener("click", () => {
-      this.chatClient.toggleChat();
+    toggleChatInputButton.addEventListener("click", () => {
+      this.chatClient.toggleChatInput();
     });
   }
 

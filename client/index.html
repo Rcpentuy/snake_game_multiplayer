@@ -8,16 +8,17 @@
   </head>
   <body>
     <canvas id="gameCanvas"></canvas>
-    <div id="chatContainer" style="display: none">
+    <div id="chatContainer">
       <div id="chatMessages"></div>
-      <input type="text" id="chatInput" placeholder="输入聊天消息..." />
+      <div id="chatInputContainer">
+        <input type="text" id="chatInput" placeholder="输入聊天消息..." />
+      </div>
     </div>
-    <div id="messageOverlay"></div>
     <button id="optionsButton">更多选项</button>
     <div id="optionsMenu" style="display: none">
       <button id="changeNameButton">修改名字</button>
       <button id="changeColorButton">更换颜色</button>
-      <button id="toggleChatButton">开关聊天框</button>
+      <button id="toggleChatInputButton">开关聊天输入</button>
     </div>
     <script type="module" src="js/app.js"></script>
   </body>

@@ -97,7 +97,7 @@ class GameLogic {
   gameLoop() {
     try {
       this.updateGame();
-      // 只在游戏循环中发送游戏状态，而不是在其他地方
+      // 在这里发送游戏状态
       this.io.emit("gameState", this.getGameState());
     } catch (error) {
       console.error("Error in game loop:", error);
@@ -126,7 +126,8 @@ class GameLogic {
         if (player.checkFoodCollision(this.food)) {
           player.grow();
           this.food.respawn(this.map);
-          this.sendGameState();
+          // 移除这行，因为我们在 gameLoop 中已经发送了游戏状态
+          // this.sendGameState();
         }
       }
     });

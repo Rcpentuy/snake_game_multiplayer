@@ -4,10 +4,10 @@ export class ChatClient {
     this.chatInput = document.getElementById("chatInput");
     this.chatMessages = document.getElementById("chatMessages");
     this.chatContainer = document.getElementById("chatContainer");
-    this.messageOverlay = document.getElementById("messageOverlay");
+    this.chatInputContainer = document.getElementById("chatInputContainer");
     this.setupEventListeners();
     this.messages = [];
-    this.maxMessages = 5; // 最多显示的消息数量
+    this.maxMessages = 50; // 最多保存的消息数量
   }
 
   setupEventListeners() {
@@ -31,47 +31,28 @@ export class ChatClient {
   }
 
   displayMessage(message) {
-    // 添加新消息到数组
     this.messages.push(message);
-
-    // 如果消息数量超过最大值，删除最旧的消息
     if (this.messages.length > this.maxMessages) {
       this.messages.shift();
     }
-
-    // 更新消息显示
-    this.updateMessageDisplay();
-
-    // 在聊天框中也添加消息
-    const messageElement = document.createElement("div");
-    messageElement.textContent = message;
-    this.chatMessages.appendChild(messageElement);
-    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
-
-    // 10秒后移除消息
-    setTimeout(() => {
-      this.messages.shift();
-      this.updateMessageDisplay();
-    }, 10000);
+    this.updateChatDisplay();
   }
 
-  updateMessageDisplay() {
-    // 清空当前显示
-    this.messageOverlay.innerHTML = "";
-
-    // 添加所有当前消息
+  updateChatDisplay() {
+    this.chatMessages.innerHTML = "";
     this.messages.forEach((msg) => {
       const msgElement = document.createElement("div");
       msgElement.textContent = msg;
-      this.messageOverlay.appendChild(msgElement);
+      this.chatMessages.appendChild(msgElement);
     });
-
-    // 显示消息覆盖层
-    this.messageOverlay.style.display = "block";
+    this.chatMessages.scrollTop = this.chatMessages.scrollHeight;
   }
 
-  toggleChat() {
-    this.chatContainer.style.display =
-      this.chatContainer.style.display === "none" ? "block" : "none";
+  toggleChatInput() {
+    this.chatInputContainer.style.display =
+      this.chatInputContainer.style.display === "none" ? "block" : "none";
+    if (this.chatInputContainer.style.display === "block") {
+      this.chatInput.focus();
+    }
   }
 }

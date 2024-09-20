@@ -6,6 +6,7 @@ body {
   align-items: center;
   height: 100vh;
   background-color: #f0f0f0;
+  overflow: hidden;
 }
 
 #gameContainer {
@@ -18,22 +19,24 @@ body {
 }
 
 #optionsButton {
-  position: absolute;
+  position: fixed;
   top: 10px;
   right: 10px;
+  z-index: 1000;
 }
 
 #optionsMenu {
-  position: absolute;
+  position: fixed;
   top: 40px;
   right: 10px;
   background-color: white;
   border: 1px solid black;
   padding: 10px;
+  z-index: 1000;
 }
 
 #chatContainer {
-  position: absolute;
+  position: fixed;
   bottom: 10px;
   left: 10px;
   width: 300px;
@@ -42,6 +45,7 @@ body {
   border: 1px solid #444;
   display: flex;
   flex-direction: column;
+  z-index: 1000;
 }
 
 #chatMessages {
